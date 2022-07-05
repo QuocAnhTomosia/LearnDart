@@ -70,7 +70,9 @@ class _MyAppState extends State<MyApp> {
             future: futureDog,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return Container( child: Image.network(snapshot.data!.message,fit: BoxFit.cover,));
+                return Container( child: Column(children: <Widget>[
+                  Text(snapshot.data!.status),
+                  Container(child: Image.network(snapshot.data!.message,fit: BoxFit.cover,),)],));
               } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
               }
