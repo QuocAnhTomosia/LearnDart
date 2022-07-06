@@ -4,16 +4,20 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-Future<Dog> fetchDog() async {
+Future<List<Dog>> fetchDog() async {
   final response = await http.get(
-      Uri.parse('https://api.api-ninjas.com/v1/dogs?name=shiba'),
+      Uri.parse('https://api.api-ninjas.com/v1/dogs?name=bull'),
       headers: {'X-Api-Key': 'qfs8GBcn4feHo1bGfdvpTw==u91Tne4T8znAkTqa'});
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
-
-    return Dog.fromJson(jsonDecode(response.body)[0]);
+    List<dynamic> data = jsonDecode(response.body);
+    List<Dog> dogs = [];
+    data.forEach((element) {
+      dogs.add(Dog.fromJson(element));
+    });
+    return dogs;
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
@@ -65,7 +69,7 @@ class Display extends StatefulWidget {
 }
 
 class _DisplayState extends State<Display> {
-  late Future<Dog> futureDog;
+  late Future<List<Dog>> futureDog;
 
   @override
   void initState() {
@@ -81,27 +85,37 @@ class _DisplayState extends State<Display> {
         title: const Text('Fetch Data Example'),
       ),
       body: Center(
-        child: FutureBuilder<Dog>(
+        child: FutureBuilder<List<Dog>>(
           future: futureDog,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return Container(
                   child: Column(
                 children: <Widget>[
-                  
-TextField(
-  keyboardType: TextInputType.number,
-),
-
+                  TextFormField(
+                    textAlign: TextAlign.center,
+                    enableInteractiveSelection: false,
+                    obscureText: false,
+                    validator: ((value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter some text';
+                      }
+                      return value;
+                    }),
+                    decoration: const InputDecoration(
+                      hintText: 'Enter your favorite animal',
+                      border: UnderlineInputBorder(),
+                    ),
+                  ),
                   Text(
-                    snapshot.data!.name,
+                    snapshot.data![0].name,
                     style: TextStyle(fontSize: 30),
                   ),
                   Container(
                     width: size.width,
-                    height: size.height*0.4,
+                    height: size.height * 0.4,
                     child: Image.network(
-                      snapshot.data!.image_link,
+                      snapshot.data![0].image_link,
                       fit: BoxFit.cover,
                     ),
                   )
