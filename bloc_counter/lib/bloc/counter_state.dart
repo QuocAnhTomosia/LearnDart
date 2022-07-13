@@ -7,9 +7,17 @@ abstract class CounterState extends Equatable {
   List<Object> get props => [];
 }
 
-class CounterInitial extends CounterState {
-  // final int counter;
-  // const CounterInitial({required this.counter});
-  // @override
-  // List<Object> get props => [counter];
+class CounterInit extends CounterState {
+  final int data;
+  CounterInit(this.data);
+  @override
+  List<Object> get props => [data];
+}
+
+class CounterLoaded extends CounterState {
+  final int data;
+
+  CounterLoaded(this.data);
+  @override
+  List<Object> get props => [data];
 }
